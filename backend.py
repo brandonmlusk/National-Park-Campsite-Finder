@@ -22,10 +22,10 @@ def api_call(campground_entity_id: str, start: datetime):
     return r
 
 
-def generate_message(availability):
-    available_dates_msg = ""
+def generate_message(availability, name):
+    available_dates_msg = f"{name}:\n"
     if not bool(availability):
-        available_dates_msg = "No campsites available right now!"
+        available_dates_msg += "No campsites available right now!"
         return available_dates_msg
 
     for i, (key, value) in enumerate(availability.items()):
@@ -46,6 +46,7 @@ class Campsite:
         email: str,
         password: str,
         sms_gateway: str,
+        name: str,
         rescan: int,
     ):
         self.campground_entity_id = campground_entity_id
@@ -55,6 +56,7 @@ class Campsite:
         self.password = password
         self.sms_gateway = sms_gateway
         self.rescan = rescan
+        self.name = name
         self.results = {}
 
     def sendText(self, body):
@@ -87,7 +89,7 @@ class Campsite:
 
         if bool(DeepDiff(current_results, self.results)):
             self.results = current_results
-            available_dates_msg = generate_message(self.results)
+            available_dates_msg = generate_message(self.results, self.name)
             self.sendText(available_dates_msg)
 
     def proccess_api_call(self):
@@ -151,6 +153,11 @@ if __name__ == "__main__":
         help="time in seconds to rescan for changes in campsite availability",
         required=True,
     )
+    parser.add_argument(
+        "--name",
+        help="national park name that you are searching for (helpful if you have multiple searches running at different national parks)",
+        required=True,
+    )
 
     # Read arguments from command line
     args = parser.parse_args()
@@ -162,6 +169,7 @@ if __name__ == "__main__":
         args.email,
         args.password,
         args.phone,
+        args.name,
         int(args.rescan),
     )
 
