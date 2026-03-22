@@ -33,7 +33,7 @@ optional arguments:
 backend.py "-p 12345678910@mms.cricketwireless.net -em example@gmail.com -pa password123 -s 2021-09-12 -e 2021-09-13 -c 251160 --rescan 30 "
 ```
 
-## Ideas for Improvements
+## Future Enhancements
 
 * setup a database to only make the API call once and keep a record of campsite availability changes
 * create proper HTML/JavaScript frontend for managing these "scans" like a dashboard
